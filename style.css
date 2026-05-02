@@ -1,0 +1,204 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.container {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 100%;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 2rem;
+}
+
+.info-panel {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f5f5f5;
+  border-radius: 10px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.info-item .label {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.info-item .value {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.canvas-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+#gameCanvas {
+  border: 3px solid #333;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.game-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  font-size: 1.2rem;
+  z-index: 10;
+}
+
+.game-message.hidden {
+  display: none;
+}
+
+.game-message button {
+  margin-top: 15px;
+  padding: 10px 25px;
+  font-size: 1rem;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.game-message button:hover {
+  background: #764ba2;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.control-group label {
+  font-weight: bold;
+  color: #333;
+  min-width: 80px;
+}
+
+.control-group select {
+  flex: 1;
+  padding: 10px;
+  font-size: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.control-group select:hover {
+  border-color: #667eea;
+}
+
+.btn {
+  padding: 12px 24px;
+  font-size: 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.instructions {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.instructions h3 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.instructions ul {
+  list-style: none;
+}
+
+.instructions li {
+  padding: 8px 0;
+  color: #555;
+  border-bottom: 1px solid #eee;
+}
+
+.instructions li:last-child {
+  border-bottom: none;
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .info-panel {
+    padding: 10px;
+  }
+
+  .info-item .value {
+    font-size: 1rem;
+  }
+}
