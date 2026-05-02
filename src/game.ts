@@ -112,11 +112,12 @@ export class Game {
   private moveBlock(direction: number): void {
     if (!this.state.currentBlock) return;
     const newX = this.state.currentBlock.x + direction * BLOCK_SIZE;
-    if (newX >= 0 && newX < COLS * BLOCK_SIZE) {
-      const colIndex = Math.floor(newX / BLOCK_SIZE);
-      if (!this.state.columns[colIndex].locked) {
-        this.state.currentBlock.x = newX;
-      }
+    const minX = 0;
+    const maxX = COLS * BLOCK_SIZE - BLOCK_SIZE;
+    const clampedX = Math.max(minX, Math.min(newX, maxX));
+    const colIndex = Math.floor(clampedX / BLOCK_SIZE);
+    if (!this.state.columns[colIndex].locked) {
+      this.state.currentBlock.x = clampedX;
     }
   }
 
@@ -269,6 +270,9 @@ export class Game {
         } else {
           this.state.currentBlock.y += LEVELS[this.state.level - 1].fallSpeed * this.state.speedMultiplier;
         }
+        const minX = 0;
+        const maxX = COLS * BLOCK_SIZE - BLOCK_SIZE;
+        this.state.currentBlock.x = Math.max(minX, Math.min(this.state.currentBlock.x, maxX));
       }
 
       this.accumulator -= dt;
