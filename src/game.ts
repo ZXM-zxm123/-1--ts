@@ -112,11 +112,12 @@ export class Game {
   private moveBlock(direction: number): void {
     if (!this.state.currentBlock) return;
     const newX = this.state.currentBlock.x + direction * BLOCK_SIZE;
-    if (newX >= 0 && newX < COLS * BLOCK_SIZE) {
-      const colIndex = Math.floor(newX / BLOCK_SIZE);
-      if (!this.state.columns[colIndex].locked) {
-        this.state.currentBlock.x = newX;
-      }
+    const minX = 0;
+    const maxX = COLS * BLOCK_SIZE - BLOCK_SIZE;
+    const clampedX = Math.max(minX, Math.min(newX, maxX));
+    const colIndex = Math.floor(clampedX / BLOCK_SIZE);
+    if (!this.state.columns[colIndex].locked) {
+      this.state.currentBlock.x = clampedX;
     }
   }
 
@@ -127,7 +128,10 @@ export class Game {
     this.state.score += removed.length * 20;
     this.state.bombMode = false;
     this.checkGameConditions();
-    this.spawnNewBlock();
+    this.checkAndTriggerClear();
+    if (!this.state.gameOver && !this.state.levelComplete) {
+      this.spawnNewBlock();
+    }
   }
 
   private checkCollision(block: Block): boolean {
@@ -192,6 +196,7 @@ export class Game {
         this.state.score += 15;
       }
     }
+    this.checkAndTriggerClear();
   }
 
   private checkMatches(): void {
@@ -217,6 +222,7 @@ export class Game {
         this.removeMatches(colIndex, matchStart, matchLength);
       }
     }
+    this.checkAndTriggerClear();
   }
 
   private removeMatches(colIndex: number, start: number, length: number): void {
@@ -225,6 +231,30 @@ export class Game {
     const baseScore = length * 50;
     this.state.score += baseScore + bonus;
     column.blocks.splice(start, length);
+  }
+
+  private checkBoardEmpty(): boolean {
+    for (const column of this.state.columns) {
+      if (column.blocks.length > 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private checkAndTriggerClear(): void {
+    if (this.checkBoardEmpty()) {
+      this.state.levelComplete = true;
+      this.state.currentBlock = null;
+      if (this.state.level < 5 && this.state.level >= this.state.maxUnlockedLevel) {
+        this.state.maxUnlockedLevel = this.state.level + 1;
+        StorageManager.setMaxUnlockedLevel(this.state.maxUnlockedLevel);
+      }
+      if (this.state.score > this.state.highScore) {
+        this.state.highScore = this.state.score;
+        StorageManager.setHighScore(this.state.highScore);
+      }
+    }
   }
 
   private checkGameConditions(): void {
@@ -269,6 +299,9 @@ export class Game {
         } else {
           this.state.currentBlock.y += LEVELS[this.state.level - 1].fallSpeed * this.state.speedMultiplier;
         }
+        const minX = 0;
+        const maxX = COLS * BLOCK_SIZE - BLOCK_SIZE;
+        this.state.currentBlock.x = Math.max(minX, Math.min(this.state.currentBlock.x, maxX));
       }
 
       this.accumulator -= dt;
