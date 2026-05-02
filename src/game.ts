@@ -128,7 +128,10 @@ export class Game {
     this.state.score += removed.length * 20;
     this.state.bombMode = false;
     this.checkGameConditions();
-    this.spawnNewBlock();
+    this.checkAndTriggerClear();
+    if (!this.state.gameOver && !this.state.levelComplete) {
+      this.spawnNewBlock();
+    }
   }
 
   private checkCollision(block: Block): boolean {
@@ -193,6 +196,7 @@ export class Game {
         this.state.score += 15;
       }
     }
+    this.checkAndTriggerClear();
   }
 
   private checkMatches(): void {
@@ -218,6 +222,7 @@ export class Game {
         this.removeMatches(colIndex, matchStart, matchLength);
       }
     }
+    this.checkAndTriggerClear();
   }
 
   private removeMatches(colIndex: number, start: number, length: number): void {
@@ -226,6 +231,30 @@ export class Game {
     const baseScore = length * 50;
     this.state.score += baseScore + bonus;
     column.blocks.splice(start, length);
+  }
+
+  private checkBoardEmpty(): boolean {
+    for (const column of this.state.columns) {
+      if (column.blocks.length > 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private checkAndTriggerClear(): void {
+    if (this.checkBoardEmpty()) {
+      this.state.levelComplete = true;
+      this.state.currentBlock = null;
+      if (this.state.level < 5 && this.state.level >= this.state.maxUnlockedLevel) {
+        this.state.maxUnlockedLevel = this.state.level + 1;
+        StorageManager.setMaxUnlockedLevel(this.state.maxUnlockedLevel);
+      }
+      if (this.state.score > this.state.highScore) {
+        this.state.highScore = this.state.score;
+        StorageManager.setHighScore(this.state.highScore);
+      }
+    }
   }
 
   private checkGameConditions(): void {
